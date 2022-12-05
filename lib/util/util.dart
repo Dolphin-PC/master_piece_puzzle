@@ -1,46 +1,59 @@
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image/image.dart' as imglib;
+import 'package:master_piece_puzzle/widget/BottomSplitImage.dart';
 import 'package:master_piece_puzzle/widget/SplitImage.dart';
 
 class Util {
+  List<Image> splitList = [];
+
   Image loadImage(String img) {
     return Image(
       image: AssetImage('images/$img.png'),
     );
   }
 
-  Future<List<Widget>> loadSplitImageWidget(String img,
+  Future<List<SplitImage>> loadSplitImageWidget(String img,
       [int widthCnt = 3, int heightCnt = 3]) async {
-    var loadData = await rootBundle.load('images/$img.png');
-
-    List<Image> splitList =
-        splitImage(loadData.buffer.asUint8List(), widthCnt, heightCnt);
-    List<Widget> resultList = [];
+    if (splitList.isEmpty) {
+      splitList = await loadSplitImage(img, widthCnt, heightCnt);
+    }
+    List<SplitImage> resultList = [];
 
     for (int i = 0; i < heightCnt; i++) {
-      // List<Widget> row = [];
       for (int j = 0; j < widthCnt; j++) {
         resultList.add(SplitImage(
           image: splitList[heightCnt * i + j],
           imageNumber: heightCnt * i + j,
         ));
       }
-      // resultList.add(Expanded(
-      //   child: Row(
-      //     children: row,
-      //   ),
-      // ));
     }
     return resultList;
   }
 
-  Future<List<Image>> loadSplitImage(String img) async {
+  Future<List<BottomSplitImage>> loadBottomSplitImageWidget(String img,
+      [int widthCnt = 3, int heightCnt = 3]) async {
+    if (splitList.isEmpty) {
+      splitList = await loadSplitImage(img, widthCnt, heightCnt);
+    }
+    List<BottomSplitImage> resultList = [];
+
+    for (int i = 0; i < heightCnt; i++) {
+      for (int j = 0; j < widthCnt; j++) {
+        resultList.add(BottomSplitImage(
+          image: splitList[heightCnt * i + j],
+          imageNumber: heightCnt * i + j,
+        ));
+      }
+    }
+    return resultList;
+  }
+
+  Future<List<Image>> loadSplitImage(String img,
+      [int widthCnt = 3, int heightCnt = 3]) async {
     var loadData = await rootBundle.load('images/$img.png');
 
-    return splitImage(loadData.buffer.asUint8List());
+    return splitImage(loadData.buffer.asUint8List(), widthCnt, heightCnt);
   }
 
   List<Image> splitImage(List<int> input,

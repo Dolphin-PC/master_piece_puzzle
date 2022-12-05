@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:master_piece_puzzle/provider/SplitImageProvider.dart';
+import 'package:provider/provider.dart';
 
 class SplitImage extends StatefulWidget {
   final Image image;
   final int imageNumber;
+  bool isCorrect = false;
+  bool isClicked = false;
 
-  const SplitImage({Key? key, required this.image, required this.imageNumber})
+  SplitImage({Key? key, required this.image, required this.imageNumber})
       : super(key: key);
 
   @override
@@ -12,50 +16,47 @@ class SplitImage extends StatefulWidget {
 }
 
 class _SplitImageState extends State<SplitImage> {
-  bool isCorrect = false;
-  bool isClicked = false;
+  late SplitImageProvider splitImageProvider;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   void onClickFn() {
-    if (isCorrect) return;
-
-    setState(() {
-      isClicked = !isClicked;
-    });
-    // print(widget.imageNumber);
-    // widget.image.width
+    splitImageProvider.onPuzzleClickFn(widget.imageNumber);
   }
 
   dynamic cardStatus(String key) {
-    Map<String, dynamic> CardObj = {
+    Map<String, dynamic> cardObj = {
       'color': Colors.white,
     };
 
-    if (!isCorrect && isClicked) {
-      CardObj['color'] = Colors.indigo;
+    if (!widget.isCorrect && widget.isClicked) {
+      cardObj['color'] = Colors.indigo;
     }
 
-    return CardObj[key];
+    return cardObj[key];
   }
 
   @override
   Widget build(BuildContext context) {
+    splitImageProvider = Provider.of<SplitImageProvider>(context, listen: true);
     return InkWell(
       onTap: onClickFn,
       child: Card(
         color: cardStatus('color'),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: isCorrect
+          child: widget.isCorrect
               ? Image(
                   image: widget.image.image,
                   fit: BoxFit.fill,
                 )
               : Center(
-                  child: Container(
-                    child: Text(
-                      widget.imageNumber.toString(),
-                      style: const TextStyle(color: Colors.black),
-                    ),
+                  child: Text(
+                    widget.imageNumber.toString(),
+                    style: const TextStyle(color: Colors.black),
                   ),
                 ),
         ),
