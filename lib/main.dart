@@ -1,23 +1,48 @@
 import 'package:flutter/material.dart';
-import 'package:logger/logger.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:master_piece_puzzle/Ads/Common.dart';
 import 'package:master_piece_puzzle/page/GamePage.dart';
 import 'package:master_piece_puzzle/provider/SplitImageProvider.dart';
+import 'package:master_piece_puzzle/widget/WrapScaffold.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  // WidgetsFlutterBinding.ensureInitialized();
-  // MobileAds.instance.initialize();
+  WidgetsFlutterBinding.ensureInitialized();
+  MobileAds.instance.initialize();
 
-  runApp(const MyApp());
+  runApp(test());
 }
 
-var logger = Logger(
-  printer: PrettyPrinter(),
-);
+class test extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    TargetPlatform os = Theme.of(context).platform;
+    BannerAd banner = BannerAd(
+      listener: BannerAdListener(
+        onAdFailedToLoad: (Ad ad, LoadAdError error) {},
+        onAdLoaded: (_) {},
+      ),
+      size: AdSize.banner,
+      adUnitId: UNIT_ID[os == TargetPlatform.iOS ? 'ios' : 'android']!,
+      request: const AdRequest(),
+    )..load();
 
-var loggerNoStack = Logger(
-  printer: PrettyPrinter(methodCount: 0),
-);
+    return MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      debugShowCheckedModeBanner: false,
+      home: WrapScaffold(
+        body: Container(
+          child: AdWidget(
+            ad: banner,
+          ),
+        ),
+      ),
+    );
+  }
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
