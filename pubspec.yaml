@@ -16,11 +16,13 @@ dependencies:
   path_provider: ^2.0.11
   provider: ^6.0.0
   logger: ^1.1.0
+  google_mobile_ads: ^2.3.0
 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  google_mobile_ads: ^2.3.0
   flutter_lints: ^2.0.0
 
 flutter:

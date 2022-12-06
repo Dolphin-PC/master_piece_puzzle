@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:master_piece_puzzle/main.dart';
 import 'package:master_piece_puzzle/widget/BottomSplitImage.dart';
 import 'package:master_piece_puzzle/widget/SplitImage.dart';
 
@@ -18,7 +17,7 @@ class SplitImageProvider extends ChangeNotifier {
     imgList[imageNumber].isClicked = true;
     seletedNumber = imageNumber;
 
-    logger.d(imageNumber);
+    // logger.d(imageNumber);
 
     notifyListeners();
   }
@@ -31,9 +30,22 @@ class SplitImageProvider extends ChangeNotifier {
       isSelected = false;
       seletedNumber = -1;
 
-      bottomImgList.removeWhere(
-          (BottomSplitImage bottomImg) => bottomImg.imageNumber == imageNumber);
+      bottomImgList
+          .firstWhere((bottomImg) => bottomImg.imageNumber == imageNumber)
+          .isCorrect = true;
       notifyListeners();
     }
+  }
+
+  void onRefreshPuzzle() {
+    for (SplitImage img in imgList) {
+      img.isCorrect = false;
+      img.isClicked = false;
+    }
+    for (BottomSplitImage img in bottomImgList) {
+      img.isCorrect = false;
+    }
+    notifyListeners();
+    // imgList.setAll(index, iterable)
   }
 }

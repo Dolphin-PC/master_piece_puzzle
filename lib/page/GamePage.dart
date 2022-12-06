@@ -1,8 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:master_piece_puzzle/provider/SplitImageProvider.dart';
-import 'package:master_piece_puzzle/widget/BottomSplitImage.dart';
 import 'package:master_piece_puzzle/widget/GamePageBottom.dart';
-import 'package:master_piece_puzzle/widget/SplitImage.dart';
 import 'package:master_piece_puzzle/widget/WrapScaffold.dart';
 import 'package:provider/provider.dart';
 
@@ -21,29 +20,40 @@ class _GamePageState extends State<GamePage> {
   Util util = Util();
   late SplitImageProvider splitImageProvider;
 
-  List<SplitImage> imgList = [];
-  List<BottomSplitImage> bottomImgList = [];
+  @override
+  void initState() {
+    super.initState();
 
-  Future<List<SplitImage>> loadSplitImg() async {
+    Util.execAfterOnlyBinding(() {
+      loadSplitImg();
+    });
+  }
+
+  Future<void> loadSplitImg() async {
     // await Future.delayed(const Duration(seconds: 1));
-    imgList = await util.loadSplitImageWidget(widget.imgName, 3, 3);
-    splitImageProvider.imgList = imgList;
+    splitImageProvider.imgList =
+        await util.loadSplitImageWidget(widget.imgName, 3, 3);
+
     await getBottomSplitImg();
-    return imgList;
   }
 
   Future<void> getBottomSplitImg() async {
-    bottomImgList = await util.loadBottomSplitImageWidget(widget.imgName, 3, 3);
-    splitImageProvider.bottomImgList = bottomImgList;
-    bottomImgList.shuffle();
+    splitImageProvider.bottomImgList =
+        await util.loadBottomSplitImageWidget(widget.imgName, 3, 3);
+    splitImageProvider.bottomImgList.shuffle();
   }
 
   @override
   Widget build(BuildContext context) {
-    splitImageProvider =
-        Provider.of<SplitImageProvider>(context, listen: false);
+    splitImageProvider = Provider.of<SplitImageProvider>(context, listen: true);
 
     return WrapScaffold(
+      actions: [
+        IconButton(
+          onPressed: splitImageProvider.onRefreshPuzzle,
+          icon: const Icon(Icons.refresh),
+        )
+      ],
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -52,13 +62,9 @@ class _GamePageState extends State<GamePage> {
             flex: 9,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: FutureBuilder(
-                future: loadSplitImg(),
-                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  if (snapshot.hasData == false) {
-                    return util.loadImage(widget.imgName);
-                  } else {
-                    return GridView.builder(
+              child: splitImageProvider.imgList.isEmpty
+                  ? Text('loading...')
+                  : GridView.builder(
                       itemCount: 9,
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
@@ -68,18 +74,15 @@ class _GamePageState extends State<GamePage> {
                         crossAxisSpacing: 10,
                       ),
                       itemBuilder: (BuildContext ctx, int index) {
-                        return imgList[index];
+                        return splitImageProvider.imgList[index];
                       },
-                    );
-                  }
-                },
-              ),
+                    ),
             ),
           ),
           const Flexible(
             flex: 1,
             child: GamePageBottom(),
-          )
+          ),
         ],
       ),
     );

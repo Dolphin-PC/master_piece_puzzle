@@ -5,6 +5,9 @@ import 'package:master_piece_puzzle/provider/SplitImageProvider.dart';
 import 'package:provider/provider.dart';
 
 void main() {
+  // WidgetsFlutterBinding.ensureInitialized();
+  // MobileAds.instance.initialize();
+
   runApp(const MyApp());
 }
 
@@ -28,6 +31,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         title: 'MasterPiece Puzzle',
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primarySwatch: Colors.indigo,
         ),

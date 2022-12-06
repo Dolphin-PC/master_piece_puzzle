@@ -5,9 +5,13 @@ import 'package:provider/provider.dart';
 class BottomSplitImage extends StatefulWidget {
   final Image image;
   final int imageNumber;
-  const BottomSplitImage(
-      {Key? key, required this.image, required this.imageNumber})
-      : super(key: key);
+  bool isCorrect = false;
+
+  BottomSplitImage({
+    Key? key,
+    required this.image,
+    required this.imageNumber,
+  }) : super(key: key);
 
   @override
   State<BottomSplitImage> createState() => _BottomSplitImageState();
@@ -15,6 +19,7 @@ class BottomSplitImage extends StatefulWidget {
 
 class _BottomSplitImageState extends State<BottomSplitImage> {
   late SplitImageProvider splitImageProvider;
+
   @override
   void initState() {
     super.initState();
@@ -27,17 +32,19 @@ class _BottomSplitImageState extends State<BottomSplitImage> {
   @override
   Widget build(BuildContext context) {
     splitImageProvider = Provider.of<SplitImageProvider>(context, listen: true);
-    return InkWell(
-      onTap: onBottomClickFn,
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Image(
-            image: widget.image.image,
-            fit: BoxFit.fill,
-          ),
-        ),
-      ),
-    );
+    return widget.isCorrect
+        ? Container()
+        : InkWell(
+            onTap: onBottomClickFn,
+            child: Card(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Image(
+                  image: widget.image.image,
+                  fit: BoxFit.fill,
+                ),
+              ),
+            ),
+          );
   }
 }
