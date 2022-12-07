@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:master_piece_puzzle/page/GamePage.dart';
-import 'package:master_piece_puzzle/page/IndexPage.dart';
+import 'package:master_piece_puzzle/page/NavPage.dart';
 import 'package:master_piece_puzzle/provider/SplitImageProvider.dart';
 import 'package:provider/provider.dart';
 
@@ -18,7 +18,6 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -31,7 +30,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(primarySwatch: Colors.indigo),
         initialRoute: '/',
         routes: {
-          IndexPage.routeName: (context) => const IndexPage(),
+          NavPage.routeName: (context) => const NavPage(),
           GamePage.routeName: (context) => const GamePage(),
         },
         // home: const GamePage(imgName: 'cat'),

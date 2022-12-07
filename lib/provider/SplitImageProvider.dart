@@ -3,7 +3,7 @@ import 'package:master_piece_puzzle/widget/BottomSplitImage.dart';
 import 'package:master_piece_puzzle/widget/SplitImage.dart';
 
 class SplitImageProvider extends ChangeNotifier {
-  String imgName = "";
+  String imgName = "cat";
 
   List<SplitImage> imgList = [];
   List<BottomSplitImage> bottomImgList = [];
