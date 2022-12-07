@@ -1,16 +1,16 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:master_piece_puzzle/Common/CommUtil.dart';
+import 'package:master_piece_puzzle/Common/Wrapper/WrapScaffold.dart';
 import 'package:master_piece_puzzle/provider/SplitImageProvider.dart';
 import 'package:master_piece_puzzle/widget/GamePageBottom.dart';
-import 'package:master_piece_puzzle/widget/WrapScaffold.dart';
 import 'package:provider/provider.dart';
 
 import '../util/util.dart';
 
 class GamePage extends StatefulWidget {
-  const GamePage({Key? key, required this.imgName}) : super(key: key);
-
-  final String imgName;
+  static const routeName = '/game';
+  const GamePage({Key? key}) : super(key: key);
 
   @override
   State<GamePage> createState() => _GamePageState();
@@ -19,27 +19,28 @@ class GamePage extends StatefulWidget {
 class _GamePageState extends State<GamePage> {
   Util util = Util();
   late SplitImageProvider splitImageProvider;
+  late String imgName;
 
   @override
   void initState() {
     super.initState();
 
-    Util.execAfterOnlyBinding(() {
-      loadSplitImg();
+    CommUtil.execAfterOnlyBinding(() {
+      imgName = splitImageProvider.imgName;
+      loadSplitImg(imgName);
     });
   }
 
-  Future<void> loadSplitImg() async {
+  Future<void> loadSplitImg(String imgName) async {
     // await Future.delayed(const Duration(seconds: 1));
-    splitImageProvider.imgList =
-        await util.loadSplitImageWidget(widget.imgName, 3, 3);
+    splitImageProvider.imgList = await util.loadSplitImageWidget(imgName, 3, 3);
 
-    await getBottomSplitImg();
+    await getBottomSplitImg(imgName);
   }
 
-  Future<void> getBottomSplitImg() async {
+  Future<void> getBottomSplitImg(String imgName) async {
     splitImageProvider.bottomImgList =
-        await util.loadBottomSplitImageWidget(widget.imgName, 3, 3);
+        await util.loadBottomSplitImageWidget(imgName, 3, 3);
     splitImageProvider.bottomImgList.shuffle();
   }
 

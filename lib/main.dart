@@ -1,47 +1,18 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:master_piece_puzzle/Ads/Common.dart';
 import 'package:master_piece_puzzle/page/GamePage.dart';
+import 'package:master_piece_puzzle/page/IndexPage.dart';
 import 'package:master_piece_puzzle/provider/SplitImageProvider.dart';
-import 'package:master_piece_puzzle/widget/WrapScaffold.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  MobileAds.instance.initialize();
-
-  runApp(test());
-}
-
-class test extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    TargetPlatform os = Theme.of(context).platform;
-    BannerAd banner = BannerAd(
-      listener: BannerAdListener(
-        onAdFailedToLoad: (Ad ad, LoadAdError error) {},
-        onAdLoaded: (_) {},
-      ),
-      size: AdSize.banner,
-      adUnitId: UNIT_ID[os == TargetPlatform.iOS ? 'ios' : 'android']!,
-      request: const AdRequest(),
-    )..load();
-
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      debugShowCheckedModeBanner: false,
-      home: WrapScaffold(
-        body: Container(
-          child: AdWidget(
-            ad: banner,
-          ),
-        ),
-      ),
-    );
+  if (!kIsWeb) {
+    MobileAds.instance.initialize();
   }
+
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -57,10 +28,13 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'MasterPiece Puzzle',
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primarySwatch: Colors.indigo,
-        ),
-        home: const GamePage(imgName: 'cat'),
+        theme: ThemeData(primarySwatch: Colors.indigo),
+        initialRoute: '/',
+        routes: {
+          IndexPage.routeName: (context) => const IndexPage(),
+          GamePage.routeName: (context) => const GamePage(),
+        },
+        // home: const GamePage(imgName: 'cat'),
       ),
     );
   }
