@@ -41,17 +41,13 @@ class _WrapScaffoldState extends State<WrapScaffold> {
               )
             : null,
         body: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Flexible(
-              flex: 9,
+              fit: FlexFit.tight,
               child: widget.body,
             ),
-            widget.isBottomBannerAds
-                ? const Flexible(
-                    flex: 1,
-                    child: BannerAds(),
-                  )
-                : Container()
+            widget.isBottomBannerAds ? const BannerAds() : Container()
           ],
         ),
         floatingActionButton: widget.isFloating

@@ -5,7 +5,8 @@ import 'package:master_piece_puzzle/page/IndexPage.dart';
 class NavPage extends StatefulWidget {
   static const routeName = '/';
 
-  const NavPage({Key? key}) : super(key: key);
+  final int? initIndex;
+  const NavPage({Key? key, this.initIndex = 0}) : super(key: key);
 
   @override
   State<NavPage> createState() => _NavPageState();
@@ -18,6 +19,12 @@ class _NavPageState extends State<NavPage> {
     const IndexPage(),
     const Text('fjdsklf'),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _currentIndex = widget.initIndex!;
+  }
 
   @override
   Widget build(BuildContext context) {
