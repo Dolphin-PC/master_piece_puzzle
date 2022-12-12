@@ -22,8 +22,7 @@ class _ImageCardState extends State<ImageCard> {
         child: Util.loadImage(widget.imageObject.imgResourceName)
       ),
       onTap: () {
-        // print(widget.imageObject.imgResourceName);
-        splitImageProvider.imgName = widget.imageObject.imgResourceName;
+        splitImageProvider.imageObject = widget.imageObject;
         Navigator.pushNamed(context, '/game');
       },
     );

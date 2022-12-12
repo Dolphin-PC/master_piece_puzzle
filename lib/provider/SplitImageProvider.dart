@@ -1,15 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:master_piece_puzzle/data/ImageData.dart';
+import 'package:master_piece_puzzle/util/util.dart';
 import 'package:master_piece_puzzle/widget/BottomSplitImage.dart';
 import 'package:master_piece_puzzle/widget/SplitImage.dart';
 
+enum GameStatus { loading, ready, correct }
+
 class SplitImageProvider extends ChangeNotifier {
-  String imgName = "cat";
+  late ImageObject imageObject =
+      ImageObject(imgDisplayName: 'cat', imgResourceName: 'cat');
+
+  GameStatus gameStatus = GameStatus.loading;
 
   List<SplitImage> imgList = [];
   List<BottomSplitImage> bottomImgList = [];
 
   bool isSelected = false;
+  bool isAllCorrect = false;
   int seletedNumber = -1;
+
+  void initGame() async {
+    gameStatus = GameStatus.loading;
+    Util util = Util();
+    isAllCorrect = false;
+    imgList =
+        await util.loadSplitImageWidget(imageObject.imgResourceName, 3, 3);
+    bottomImgList = await util.loadBottomSplitImageWidget(
+        imageObject.imgResourceName, 3, 3);
+    bottomImgList.shuffle();
+
+    gameStatus = GameStatus.ready;
+    notifyListeners();
+  }
 
   void onPuzzleClickFn(int imageNumber) {
     isSelected = true;
@@ -18,8 +40,6 @@ class SplitImageProvider extends ChangeNotifier {
     }
     imgList[imageNumber].isClicked = true;
     seletedNumber = imageNumber;
-
-    // logger.d(imageNumber);
 
     notifyListeners();
   }
@@ -35,6 +55,8 @@ class SplitImageProvider extends ChangeNotifier {
       bottomImgList
           .firstWhere((bottomImg) => bottomImg.imageNumber == imageNumber)
           .isCorrect = true;
+
+      onAllCorrectFn();
       notifyListeners();
     }
   }
@@ -48,6 +70,11 @@ class SplitImageProvider extends ChangeNotifier {
       img.isCorrect = false;
     }
     notifyListeners();
-    // imgList.setAll(index, iterable)
+  }
+
+  void onAllCorrectFn() {
+    if (imgList.every((element) => element.isCorrect == true)) {
+      gameStatus = GameStatus.correct;
+    }
   }
 }

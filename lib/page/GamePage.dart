@@ -26,29 +26,39 @@ class _GamePageState extends State<GamePage> {
     super.initState();
 
     CommUtil.execAfterOnlyBinding(() {
-      imgName = splitImageProvider.imgName;
-      loadSplitImg(imgName);
+      splitImageProvider.initGame();
     });
-  }
-
-  Future<void> loadSplitImg(String imgName) async {
-    // await Future.delayed(const Duration(seconds: 1));
-    splitImageProvider.imgList = await util.loadSplitImageWidget(imgName, 3, 3);
-
-    await getBottomSplitImg(imgName);
-  }
-
-  Future<void> getBottomSplitImg(String imgName) async {
-    splitImageProvider.bottomImgList =
-        await util.loadBottomSplitImageWidget(imgName, 3, 3);
-    splitImageProvider.bottomImgList.shuffle();
   }
 
   @override
   Widget build(BuildContext context) {
     splitImageProvider = Provider.of<SplitImageProvider>(context, listen: true);
 
+    Widget getWidgetByGameStatus() {
+      switch(splitImageProvider.gameStatus){
+        case GameStatus.loading:
+          return const Text('loading...');
+        case GameStatus.ready:
+          return GridView.builder(
+            itemCount: 9,
+            gridDelegate:
+            const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              childAspectRatio: 1 / 1,
+              mainAxisSpacing: 10,
+              crossAxisSpacing: 10,
+            ),
+            itemBuilder: (BuildContext ctx, int index) {
+              return splitImageProvider.imgList[index];
+            },
+          );
+        case GameStatus.correct:
+          return const Text('correct!!');
+      }
+    }
+
     return WrapScaffold(
+      title: Text(splitImageProvider.imageObject.imgDisplayName),
       actions: [
         IconButton(
           onPressed: splitImageProvider.onRefreshPuzzle,
@@ -63,21 +73,7 @@ class _GamePageState extends State<GamePage> {
             flex: 9,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: splitImageProvider.imgList.isEmpty
-                  ? Text('loading...')
-                  : GridView.builder(
-                      itemCount: 9,
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        childAspectRatio: 1 / 1,
-                        mainAxisSpacing: 10,
-                        crossAxisSpacing: 10,
-                      ),
-                      itemBuilder: (BuildContext ctx, int index) {
-                        return splitImageProvider.imgList[index];
-                      },
-                    ),
+              child: getWidgetByGameStatus(),
             ),
           ),
           const Flexible(

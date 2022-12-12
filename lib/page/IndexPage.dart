@@ -16,8 +16,6 @@ class IndexPage extends StatefulWidget {
 
 class _IndexPageState extends State<IndexPage> {
   late List<ImageObject> imgList = [];
-  ImageObject _imageObject =
-      ImageObject(imgResourceName: 'cat', imgDisplayName: 'cat');
 
   @override
   void initState() {
