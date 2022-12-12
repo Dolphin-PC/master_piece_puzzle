@@ -10,6 +10,7 @@ class Util {
   /// 단순 이미지 가져오기
   static Image loadImage(String img) {
     return Image(
+      fit: BoxFit.fill,
       image: AssetImage('images/$img.jpg'),
     );
   }

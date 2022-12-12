@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:master_piece_puzzle/data/ImageData.dart';
+import 'package:master_piece_puzzle/provider/SplitImageProvider.dart';
 import 'package:master_piece_puzzle/util/util.dart';
+import 'package:provider/provider.dart';
 
 class ImageCard extends StatefulWidget {
   final ImageObject imageObject;
@@ -14,8 +16,16 @@ class ImageCard extends StatefulWidget {
 class _ImageCardState extends State<ImageCard> {
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Util.loadImage(widget.imageObject.imgResourceName),
+    SplitImageProvider splitImageProvider = Provider.of<SplitImageProvider>(context, listen:false);
+    return InkWell(
+      child: Card(
+        child: Util.loadImage(widget.imageObject.imgResourceName)
+      ),
+      onTap: () {
+        // print(widget.imageObject.imgResourceName);
+        splitImageProvider.imgName = widget.imageObject.imgResourceName;
+        Navigator.pushNamed(context, '/game');
+      },
     );
   }
 }

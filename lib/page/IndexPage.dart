@@ -15,14 +15,21 @@ class IndexPage extends StatefulWidget {
 }
 
 class _IndexPageState extends State<IndexPage> {
+  late List<ImageObject> imgList = [];
   ImageObject _imageObject =
       ImageObject(imgResourceName: 'cat', imgDisplayName: 'cat');
 
   @override
   void initState() {
     super.initState();
-    CommUtil.getDataFromJson().then((res) {
-      logger.d(res[0]['imgResourceName']);
+    CommUtil.getDataFromJson("data").then((list) {
+      late List<ImageObject> _imgList = [];
+      for (var obj in list) {
+        _imgList.add(ImageObject(
+            imgResourceName: obj['imgResourceName'],
+            imgDisplayName: obj['imgDisplayName']));
+      }
+      setState(() => imgList = _imgList);
     });
   }
 
@@ -33,7 +40,7 @@ class _IndexPageState extends State<IndexPage> {
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: GridView.builder(
-          itemCount: 9,
+          itemCount: imgList.length,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 3,
             childAspectRatio: 1 / 1,
@@ -42,7 +49,7 @@ class _IndexPageState extends State<IndexPage> {
           ),
           itemBuilder: (BuildContext ctx, int index) {
             return ImageCard(
-              imageObject: _imageObject,
+              imageObject: imgList[index],
             );
           },
         ),
