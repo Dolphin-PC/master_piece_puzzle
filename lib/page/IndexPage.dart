@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:master_piece_puzzle/common/CommUtil.dart';
-import 'package:master_piece_puzzle/common/Logger.dart';
 import 'package:master_piece_puzzle/common/widget/ImageCard.dart';
 import 'package:master_piece_puzzle/common/wrapper/WrapScaffold.dart';
 import 'package:master_piece_puzzle/data/ImageData.dart';
@@ -21,14 +20,18 @@ class _IndexPageState extends State<IndexPage> {
   void initState() {
     super.initState();
     CommUtil.getDataFromJson("data").then((list) {
-      late List<ImageObject> _imgList = [];
       for (var obj in list) {
-        _imgList.add(ImageObject(
-            imgResourceName: obj['imgResourceName'],
-            imgDisplayName: obj['imgDisplayName']));
+        imgList.add(ImageObject(imgResourceName: obj['imgResourceName'], imgDisplayName: obj['imgDisplayName']));
       }
-      setState(() => imgList = _imgList);
+      initSharedData();
     });
+  }
+
+  void initSharedData() async {
+    List<String> correctList = await CommUtil.getSharedData<List<String>>('correctPuzzleList') ?? [];
+
+    imgList.removeWhere((img) => correctList.contains(img.imgResourceName));
+    setState(() {});
   }
 
   @override
@@ -48,6 +51,7 @@ class _IndexPageState extends State<IndexPage> {
           itemBuilder: (BuildContext ctx, int index) {
             return ImageCard(
               imageObject: imgList[index],
+              afterFn: () => initSharedData(),
             );
           },
         ),

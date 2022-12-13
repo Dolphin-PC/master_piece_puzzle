@@ -28,7 +28,7 @@ class CustomDialog extends StatelessWidget {
       actions: btnList.isEmpty
           ? <Widget>[
               ElevatedButton(
-                child: const Text('확인'),
+                child: const Text('닫기'),
                 onPressed: () {
                   Navigator.of(context).pop();
                   fn();

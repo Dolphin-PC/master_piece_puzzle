@@ -21,7 +21,6 @@ class GamePage extends StatefulWidget {
 class _GamePageState extends State<GamePage> {
   Util util = Util();
   late SplitImageProvider splitImageProvider;
-  late String imgName;
 
   @override
   void initState() {
@@ -33,24 +32,37 @@ class _GamePageState extends State<GamePage> {
     });
   }
 
+  /// 레벨 선택 창
   void selectDialog() {
     List<int> lvlList = [3, 4, 5, 6];
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (BuildContext context) {
-        Map<String, Function> btnList = {};
+        List<Widget> btnList = [];
         for (int lvl in lvlList) {
-          btnList['lvl$lvl'] = () {
-            splitImageProvider.initGame(lvl);
-            Navigator.pop(context);
-          };
+          btnList.add(
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
+              child: ElevatedButton(
+                child: Text('lvl $lvl'),
+                onPressed: () {
+                  splitImageProvider.initGame(lvl);
+                  Navigator.pop(context);
+                },
+              ),
+            ),
+          );
         }
 
         return CustomDialog(
           context: context,
           title: '난이도 선택',
-          fn: () => {},
-          btnList: btnList,
+          msgWidget: Row(
+            children: btnList,
+          ),
+          fn: () => Navigator.pop(context),
+          btnList: {},
         );
       },
     );
@@ -63,7 +75,7 @@ class _GamePageState extends State<GamePage> {
     Widget getWidgetByGameStatus() {
       switch (splitImageProvider.gameStatus) {
         case GameStatus.loading:
-          return const Text('loading...');
+          return Util.loadImage(splitImageProvider.imageObject.imgResourceName);
         case GameStatus.ready:
           return GridView.builder(
             itemCount: splitImageProvider.level * splitImageProvider.level,
@@ -78,7 +90,7 @@ class _GamePageState extends State<GamePage> {
             },
           );
         case GameStatus.correct:
-          return const Text('correct!!');
+          return splitImageProvider.imageObject.getImageWidget();
       }
     }
 
@@ -101,6 +113,12 @@ class _GamePageState extends State<GamePage> {
               child: getWidgetByGameStatus(),
             ),
           ),
+          kReleaseMode
+              ? Container()
+              : ElevatedButton(
+                  onPressed: splitImageProvider.test_AllCorrectFn,
+                  child: const Text('test_완료처리'),
+                ),
           const Flexible(
             flex: 1,
             child: GamePageBottom(),
