@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:master_piece_puzzle/common/wrapper/WrapScaffold.dart';
 import 'package:master_piece_puzzle/page/IndexPage.dart';
+import 'package:master_piece_puzzle/page/MyPuzzle.dart';
 
 class NavPage extends StatefulWidget {
   static const routeName = '/';
@@ -17,7 +18,7 @@ class _NavPageState extends State<NavPage> {
 
   final screens = [
     const IndexPage(),
-    const Text('fjdsklf'),
+    const MyPuzzle(),
   ];
 
   @override
@@ -38,11 +39,11 @@ class _NavPageState extends State<NavPage> {
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            label: 'Home',
+            label: '메인',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
+            icon: Icon(Icons.library_books),
+            label: '내 퍼즐',
           ),
         ],
       ),

@@ -15,11 +15,14 @@ class _GamePageBottomState extends State<GamePageBottom> {
   @override
   Widget build(BuildContext context) {
     splitImageProvider = Provider.of<SplitImageProvider>(context, listen: true);
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: splitImageProvider.bottomImgList,
-      ),
-    );
+
+    return splitImageProvider.gameStatus == GameStatus.loading
+        ? Container()
+        : SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: splitImageProvider.bottomImgList,
+            ),
+          );
   }
 }

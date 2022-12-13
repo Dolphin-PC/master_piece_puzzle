@@ -18,15 +18,17 @@ class SplitImageProvider extends ChangeNotifier {
   bool isSelected = false;
   bool isAllCorrect = false;
   int seletedNumber = -1;
+  late int level;
 
-  void initGame() async {
+  void initGame(int lvl) async {
+    level = lvl;
     gameStatus = GameStatus.loading;
     Util util = Util();
     isAllCorrect = false;
-    imgList =
-        await util.loadSplitImageWidget(imageObject.imgResourceName, 3, 3);
+    imgList = await util.loadSplitImageWidget(
+        imageObject.imgResourceName, level, level);
     bottomImgList = await util.loadBottomSplitImageWidget(
-        imageObject.imgResourceName, 3, 3);
+        imageObject.imgResourceName, level, level);
     bottomImgList.shuffle();
 
     gameStatus = GameStatus.ready;
@@ -76,5 +78,10 @@ class SplitImageProvider extends ChangeNotifier {
     if (imgList.every((element) => element.isCorrect == true)) {
       gameStatus = GameStatus.correct;
     }
+  }
+
+  void setGameStatus(GameStatus status) {
+    gameStatus = status;
+    notifyListeners();
   }
 }
